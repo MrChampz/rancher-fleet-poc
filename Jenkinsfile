@@ -4,11 +4,9 @@ pipeline {
 
     stage('Build Docker image') {
       steps {
-        // obter o sha do commit atual
-        // sh 'git rev-parse --short HEAD > .git/commit-id'
         script {
+          sh "cd app"
           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            // commit_id = readFile('.git/commit-id').trim()
             // Build the image using Dockerfile
             image = docker.build("felpsmac/rancher-fleet-poc:${GIT_COMMIT}")
             // Tag the image with 'latest'
