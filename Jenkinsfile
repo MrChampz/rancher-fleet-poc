@@ -5,10 +5,9 @@ pipeline {
     stage('Build Docker image') {
       steps {
         script {
-          sh "cd app"
           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
             // Build the image using Dockerfile
-            image = docker.build("felpsmac/rancher-fleet-poc:${GIT_COMMIT}")
+          image = docker.build("felpsmac/rancher-fleet-poc:${GIT_COMMIT}", "./app")
             // Tag the image with 'latest'
             image.tag('latest')
             // Push image to the registry
