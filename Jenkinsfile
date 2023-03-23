@@ -7,12 +7,12 @@ pipeline {
         script {
           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
             // Build the image using Dockerfile
-          image = docker.build("felpsmac/rancher-fleet-poc:${GIT_COMMIT}", "./app")
+            image = docker.build("felpsmac/rancher-fleet-poc", "./app")
             // Tag the image with 'latest'
-            image.tag('latest')
+            // image.tag('latest')
             // Push image to the registry
-            image.push()
-            image.push('latest')
+            image.push("${GIT_COMMIT}")
+            image.push("latest")
           }
         }
       }
