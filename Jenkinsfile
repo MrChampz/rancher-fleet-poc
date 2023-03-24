@@ -46,10 +46,13 @@ pipeline {
 
           sh 'git add .k8s/base/kustomization.yml'
           sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
-          sh 'git push --verbose origin main:main'
+          // sh 'git push --verbose origin main:main'
           // withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
           //   sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
           // }
+          withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh "git push https://${USERNAME}:${PASSWORD}@${env.GIT_URL}"
+          }
         }
       }
     }
