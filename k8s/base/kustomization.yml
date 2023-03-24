@@ -1,1 +1,7 @@
-(.images[] | select(.name == app) | .newTag) = strenv(GIT_COMMIT)
+resources:
+  - deployment.yml
+  - service.yml
+images:
+  - name: app
+    newName: felpsmac/rancher-fleet-poc
+    newTag: latest
