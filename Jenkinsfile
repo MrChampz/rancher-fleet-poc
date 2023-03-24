@@ -40,7 +40,7 @@ pipeline {
           sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
 
           withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh "git push https://${USERNAME}:${PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
+            sh "git push https://${USERNAME}:${PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git HEAD:main"
           }
         }
       }
