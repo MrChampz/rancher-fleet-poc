@@ -4,7 +4,7 @@ pipeline {
 
     stage('Checkout code') {
       steps {
-        sh "git checkout -B ${TARGET_BRANCH}"
+        sh "git checkout -B ${GIT_BRANCH}"
       }
     }
 
