@@ -23,6 +23,9 @@ pipeline {
     }
 
     stage('Update app manifest') {
+      agent {
+        docker reuseNode: true, image: "place1/kube-tools:2021.06.18", args: "--entrypoint=''"
+      }
       steps {
         sh "cd .k8s/base"
         sh "kustomize edit set image app=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
