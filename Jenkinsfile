@@ -51,7 +51,7 @@ pipeline {
           //   sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
           // }
           withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh "git push https://${USERNAME}:${PASSWORD}@${env.GIT_URL}"
+            sh "git push https://${USERNAME}:${PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
           }
         }
       }
