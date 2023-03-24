@@ -30,7 +30,8 @@ pipeline {
       steps {
         dir('k8s/base') {
           sh './yq -i "\'.images[0].newTag = \\"xpto\\"\'" ./kustomization.yml'
-          sh 'cat kustomization.yml'
+          sh './yq -n "\'.images[0].newTag = \\"xpto\\"\'" ./k1.yml'
+          sh 'cat k1.yml'
         }
       }
     }
