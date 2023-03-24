@@ -17,11 +17,10 @@ pipeline {
     }
 
     stage('Download Kustomize') {
+      when { not { expression { return fileExists ('.k8s/base/kustomize') }}}
       steps {
         dir('.k8s/base') {
-          if (!fileExists('kustomize')) {
-            sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
-          }
+          sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
         }
       }
     }
