@@ -3,7 +3,9 @@ pipeline {
   stages {
 
     stage('Checkout code') {
-      sh "git checkout -B ${TARGET_BRANCH}"
+      steps {
+        sh "git checkout -B ${TARGET_BRANCH}"
+      }
     }
 
     stage('Build Docker image') {
