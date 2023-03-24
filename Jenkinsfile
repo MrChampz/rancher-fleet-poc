@@ -2,12 +2,6 @@ pipeline {
   agent any
   stages {
 
-    stage('Checkout code') {
-      steps {
-        sh "git checkout -B ${GIT_BRANCH}"
-      }
-    }
-
     stage('Build Docker image') {
       steps {
         script {
@@ -23,9 +17,9 @@ pipeline {
     }
 
     stage('Download Kustomize') {
-      when { not { expression { return fileExists ('.k8s/base/kustomize') }}}
+      when { not { expression { return fileExists ('k8s/base/kustomize') }}}
       steps {
-        dir('.k8s/base') {
+        dir('k8s/base') {
           sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
         }
       }
@@ -33,7 +27,7 @@ pipeline {
 
     stage('Update app manifest') {
       steps {
-        dir('.k8s/base') {
+        dir('k8s/base') {
           sh "./kustomize edit set image app=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
         }
       }
@@ -42,14 +36,9 @@ pipeline {
     stage('Commit updated manifest') {
       steps {
         script {
-          // git credentialsId: 'github', url: 'https://github.com/MrChampz/rancher-fleet-poc.git'
-
-          sh 'git add .k8s/base/kustomization.yml'
+          sh 'git add k8s/base/kustomization.yml'
           sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
-          // sh 'git push --verbose origin main:main'
-          // withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-          //   sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
-          // }
+
           withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
             sh "git push https://${USERNAME}:${PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
           }
