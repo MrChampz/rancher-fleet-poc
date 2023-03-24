@@ -40,7 +40,7 @@ pipeline {
 
           sh 'git add .k8s/base/kustomization.yml'
           sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
-          sh 'git push origin main'
+          sh 'git push origin main:main'
         }
       }
     }
