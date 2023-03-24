@@ -37,6 +37,9 @@ pipeline {
       steps {
         script {
           // git credentialsId: 'github', url: 'https://github.com/MrChampz/rancher-fleet-poc.git'
+          sh 'git config --global user.name "Jenkins"'
+          sh 'git config --global user.email "jenkins@upco.cloud"'
+          
           sh 'git add .k8s/base/kustomization.yml'
           sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
           sh 'git push origin main'
