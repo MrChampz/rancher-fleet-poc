@@ -5,10 +5,10 @@ pipeline {
     stage('Build Docker image') {
       steps {
         script {
+          // Build the image using Dockerfile
+          def image = docker.build("felpsmac/rancher-fleet-poc", "./app")
+          // Push image to the registry
           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            // Build the image using Dockerfile
-            image = docker.build("felpsmac/rancher-fleet-poc", "./app")
-            // Push image to the registry
             image.push("${GIT_COMMIT}")
             image.push("latest")
           }
@@ -27,8 +27,9 @@ pipeline {
         docker reuseNode: true, image: "place1/kube-tools:2021.06.18", args: "--entrypoint=''"
       }
       steps {
-        sh "cd .k8s/base"
-        sh "kustomize edit set image app=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
+        dir('.k8s/base') {
+          sh "kustomize edit set image app=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
+        }
       }
     }
 
