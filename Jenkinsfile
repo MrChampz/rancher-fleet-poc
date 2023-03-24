@@ -16,11 +16,12 @@ pipeline {
       }
     }
 
-    stage('Download Kustomize') {
-      when { not { expression { return fileExists ('k8s/base/kustomize') }}}
+    stage('Download yq') {
+      when { not { expression { return fileExists ('k8s/base/yq') }}}
       steps {
         dir('k8s/base') {
-          sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
+          sh "wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq"
+          sh "chmod +x yq"
         }
       }
     }
@@ -28,7 +29,7 @@ pipeline {
     stage('Update app manifest') {
       steps {
         dir('k8s/base') {
-          sh "./kustomize edit set image felpsmac/rancher-fleet-poc=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
+          sh "yq -i '(.images[] | select( .name == 'app') | .newTag) = strenv(${GIT_COMMIT})' kustomization.yml"
         }
       }
     }

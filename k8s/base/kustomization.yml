@@ -1,13 +1,7 @@
 resources:
-- deployment.yml
-- service.yml
-
+  - deployment.yml
+  - service.yml
 images:
-- name: app
-  newName: felpsmac/rancher-fleet-poc
-  newTag: b3b13529a9c11140bd285a5a86cb80f017e26dfc
-- name: felpsmac/rancher-fleet-poc
-  newName: felpsmac/rancher-fleet-poc
-  newTag: 9a995f3c3c5b2d421d851613f0ecbc125823f6fd
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
+  - name: app
+    newName: felpsmac/rancher-fleet-poc
+    newTag: latest

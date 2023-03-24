@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: felpsmac/rancher-fleet-poc:latest
+          image: app
           ports:
             - name: web
               containerPort: 8080
