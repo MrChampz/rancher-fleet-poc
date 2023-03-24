@@ -48,12 +48,12 @@ pipeline {
         }
       }
     }
+  }
 
-    post {
-      // Clean after build
-      always {
-        cleanWs()
-      }
+  post {
+    // Clean after build
+    always {
+      cleanWs()
     }
   }
 }
