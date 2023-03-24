@@ -29,7 +29,7 @@ pipeline {
     stage('Update app manifest') {
       steps {
         dir('k8s/base') {
-          sh './yq -i \'(.images[] | select(.name == \\"app\\") | .newTag) = strenv(GIT_COMMIT)\'" kustomization.yml'
+          sh './yq -i \'(.images[] | select(.name == \\"app\\") | .newTag) = strenv(GIT_COMMIT)\' kustomization.yml'
           sh 'cat kustomization.yml'
         }
       }
