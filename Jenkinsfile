@@ -19,7 +19,9 @@ pipeline {
     stage('Download Kustomize') {
       steps {
         dir('.k8s/base') {
-          sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
+          if (!fileExists('kustomize')) {
+            sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
+          }
         }
       }
     }
