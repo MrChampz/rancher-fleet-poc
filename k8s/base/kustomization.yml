@@ -4,4 +4,4 @@ resources:
 images:
   - name: app
     newName: felpsmac/rancher-fleet-poc
-    newTag: latest
+    newTag: 7398458de261ceec7b9f549ddbd9af2423fa87de
