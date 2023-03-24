@@ -28,7 +28,7 @@ pipeline {
     stage('Update app manifest') {
       steps {
         dir('k8s/base') {
-          sh "./kustomize edit set image app=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
+          sh "./kustomize edit set image felpsmac/rancher-fleet-poc=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
         }
       }
     }
