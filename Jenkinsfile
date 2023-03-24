@@ -2,6 +2,10 @@ pipeline {
   agent any
   stages {
 
+    stage('Checkout code') {
+      sh "git checkout -B ${TARGET_BRANCH}"
+    }
+
     stage('Build Docker image') {
       steps {
         script {
@@ -40,7 +44,10 @@ pipeline {
 
           sh 'git add .k8s/base/kustomization.yml'
           sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
-          sh 'git push origin main:main'
+          sh 'git push origin main'
+          // withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+          //   sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/MrChampz/rancher-fleet-poc.git"
+          // }
         }
       }
     }
