@@ -16,11 +16,11 @@ pipeline {
       }
     }
 
-    stage('Download Kustomize') {
-      steps {
-        sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
-      }
-    }
+    // stage('Download Kustomize') {
+    //   steps {
+    //     sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
+    //   }
+    // }
 
     stage('Update app manifest') {
       agent {
