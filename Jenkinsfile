@@ -20,8 +20,8 @@ pipeline {
       when { not { expression { return fileExists ('k8s/base/yq') }}}
       steps {
         dir('k8s/base') {
-          sh "curl https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o yq"
-          sh "chmod +x yq"
+          sh "curl -LJO https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+          sh "mv yq_linux_amd64 yq && chmod +x yq"
         }
       }
     }
