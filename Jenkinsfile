@@ -8,8 +8,6 @@ pipeline {
           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
             // Build the image using Dockerfile
             image = docker.build("felpsmac/rancher-fleet-poc", "./app")
-            // Tag the image with 'latest'
-            // image.tag('latest')
             // Push image to the registry
             image.push("${GIT_COMMIT}")
             image.push("latest")
@@ -18,16 +16,28 @@ pipeline {
       }
     }
 
-    // stage('Commit to github') {
-    //     steps {
-    //         script {
-    //             // Commit the txt file to github repository
-    //             git credentialsId: 'github-credentials', url: 'https://github.com/MrChampz/rancher-fleet-poc.git'
-    //             sh 'git add image.txt'
-    //             sh 'git commit -m "Add image.txt"'
-    //             sh 'git push origin master'
-    //         }
-    //     }
-    // }
+    stage('Download Kustomize') {
+      steps {
+        sh 'curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash'
+      }
+    }
+
+    stage('Update app manifest') {
+      steps {
+        sh "cd .k8s/base"
+        sh "kustomize edit set image app=felpsmac/rancher-fleet-poc:${GIT_COMMIT}"
+      }
+    }
+
+    stage('Commit updated manifest') {
+      steps {
+        script {
+          git credentialsId: 'github', url: 'https://github.com/MrChampz/rancher-fleet-poc.git'
+          sh 'git add .k8s'
+          sh "git commit -m 'Update app version to ${GIT_COMMIT} [skip ci]'"
+          sh 'git push origin main'
+        }
+      }
+    }
   }
 }

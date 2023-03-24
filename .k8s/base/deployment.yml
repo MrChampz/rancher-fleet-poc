@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rancher-fleet-poc
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rancher-fleet-poc
+  template:
+    metadata:
+      labels:
+        app: rancher-fleet-poc
+    spec:
+      containers:
+        - name: app
+          image: app
+          ports:
+            - name: web
+              containerPort: 8080
