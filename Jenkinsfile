@@ -2,7 +2,15 @@ pipeline {
   agent any
   stages {
 
+    stage('Build') {
+      when { changeRequest() }
+      steps {
+        sh "./mvnw clean install -DskipTests"
+      }
+    }
+
     stage('Build Docker image') {
+      when { not { changeRequest() }}
       steps {
         script {
           // Build the image using Dockerfile
@@ -17,7 +25,14 @@ pipeline {
     }
 
     stage('Download yq') {
-      when { not { expression { return fileExists ('k8s/base/yq') }}}
+      when {
+        not {
+          anyOf {
+            changeRequest();
+            expression { return fileExists ('k8s/base/yq') }
+          }
+        }
+      }
       steps {
         dir('k8s/base') {
           sh "curl -LJO https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
@@ -27,6 +42,7 @@ pipeline {
     }
 
     stage('Update app manifest') {
+      when { not { changeRequest() }}
       steps {
         dir('k8s/base') {
           sh "./yq -i \'.images[0].newTag = \"${GIT_COMMIT}\"\' kustomization.yml"
@@ -36,6 +52,7 @@ pipeline {
     }
 
     stage('Commit updated manifest') {
+      when { not { changeRequest() }}
       steps {
         script {
           sh 'git add k8s/base/kustomization.yml'
