@@ -5,7 +5,9 @@ pipeline {
     stage('Build') {
       when { changeRequest() }
       steps {
-        sh "./mvnw clean install -DskipTests"
+        dir('app') {
+          sh "./mvnw clean install -DskipTests"
+        }
       }
     }
 
