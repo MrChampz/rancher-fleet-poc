@@ -2,7 +2,7 @@ pipeline {
   agent any
   stages {
 
-    stage('Build') {
+    stage('Test') {
       when { changeRequest() }
       agent {
         docker {
@@ -12,7 +12,24 @@ pipeline {
       }
       steps {
         dir('app') {
-          sh "mvn clean install -DskipTests"
+          sh "mvn test"
+          archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        }
+      }
+    }
+
+    stage('Linter') {
+      when { changeRequest() }
+      agent {
+        docker {
+          image 'maven:3.9.0-eclipse-temurin-19'
+          args '-v /root/.m2:/root/.m2'
+        }
+      }
+      steps {
+        dir('app') {
+          sh "mvn checkstyle:check"
+          archiveArtifacts 'target/checkstyle-result.xml'
         }
       }
     }
