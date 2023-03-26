@@ -2,7 +2,40 @@ pipeline {
   agent any
   stages {
 
+    stage('Test') {
+      when { changeRequest() }
+      agent {
+        docker {
+          image 'maven:3.9.0-eclipse-temurin-19'
+          args '-v /root/.m2:/root/.m2'
+        }
+      }
+      steps {
+        dir('app') {
+          sh "mvn test"
+          archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        }
+      }
+    }
+
+    stage('Linter') {
+      when { changeRequest() }
+      agent {
+        docker {
+          image 'maven:3.9.0-eclipse-temurin-19'
+          args '-v /root/.m2:/root/.m2'
+        }
+      }
+      steps {
+        dir('app') {
+          sh "mvn checkstyle:check"
+          archiveArtifacts 'target/checkstyle-result.xml'
+        }
+      }
+    }
+
     stage('Build Docker image') {
+      when { not { changeRequest() }}
       steps {
         script {
           // Build the image using Dockerfile
@@ -17,7 +50,14 @@ pipeline {
     }
 
     stage('Download yq') {
-      when { not { expression { return fileExists ('k8s/base/yq') }}}
+      when {
+        not {
+          anyOf {
+            changeRequest();
+            expression { return fileExists ('k8s/base/yq') }
+          }
+        }
+      }
       steps {
         dir('k8s/base') {
           sh "curl -LJO https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
@@ -27,6 +67,7 @@ pipeline {
     }
 
     stage('Update app manifest') {
+      when { not { changeRequest() }}
       steps {
         dir('k8s/base') {
           sh "./yq -i \'.images[0].newTag = \"${GIT_COMMIT}\"\' kustomization.yml"
@@ -36,6 +77,7 @@ pipeline {
     }
 
     stage('Commit updated manifest') {
+      when { not { changeRequest() }}
       steps {
         script {
           sh 'git add k8s/base/kustomization.yml'
