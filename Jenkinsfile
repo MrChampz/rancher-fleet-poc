@@ -4,9 +4,15 @@ pipeline {
 
     stage('Build') {
       when { changeRequest() }
+      agent {
+        docker {
+          image 'maven:3.9.0-eclipse-temurin-19'
+          args '-v /root/.m2:/root/.m2'
+        }
+      }
       steps {
         dir('app') {
-          sh "./mvnw clean install -DskipTests"
+          sh "mvn clean install -DskipTests"
         }
       }
     }
