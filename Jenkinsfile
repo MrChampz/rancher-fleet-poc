@@ -13,7 +13,7 @@ pipeline {
       steps {
         dir('app') {
           sh "mvn test"
-          // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+          junit 'target/surefire-reports/*.xml'
         }
       }
     }
