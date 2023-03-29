@@ -3,4 +3,4 @@ resources:
   - service.yml
 images:
   - name: felpsmac/rancher-fleet-poc
-    newTag: d30ebf697ac9623a147b511ad99df35564b8ed10
+    newTag: latest
