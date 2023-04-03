@@ -43,8 +43,9 @@ pipeline {
       }
       steps {
         dir('app') {
+          def scannerHome = tool 'SonarScanner 4.8';
           withSonarQubeEnv('Default') {
-            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+            sh "${scannerHome}/bin/sonar-scanner"
           }
         }
       }
