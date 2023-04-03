@@ -35,6 +35,12 @@ pipeline {
     }
     
     stage('SonarQube analysis') {
+      agent {
+        docker {
+          image 'maven:3.9.0-eclipse-temurin-19'
+          args '-v /root/.m2:/root/.m2'
+        }
+      }
       steps {
         withSonarQubeEnv('Default') {
           sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
